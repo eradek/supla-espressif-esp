@@ -28,32 +28,32 @@
 #define B_SENSOR_PORT2     14
 
 void ICACHE_FLASH_ATTR supla_esp_board_set_device_name(char *buffer, uint8 buffer_size) {
-	
+
 	ets_snprintf(buffer, buffer_size, "SUPLA-GATE-MODULE");
-	
+
 }
 
 void ICACHE_FLASH_ATTR supla_esp_board_gpio_init(void) {
-		
+
 	supla_input_cfg[0].type = supla_esp_cfg.CfgButtonType == BTN_TYPE_BISTABLE ? INPUT_TYPE_BTN_BISTABLE : INPUT_TYPE_BTN_MONOSTABLE;
 	supla_input_cfg[0].gpio_id = B_CFG_PORT;
 	supla_input_cfg[0].flags = INPUT_FLAG_PULLUP | INPUT_FLAG_CFG_BTN;
-	
+
 	supla_input_cfg[1].type = INPUT_TYPE_SENSOR;
 	supla_input_cfg[1].gpio_id = B_SENSOR_PORT1;
 	supla_input_cfg[1].channel = 2;
-	
+
 	supla_input_cfg[2].type = INPUT_TYPE_SENSOR;
 	supla_input_cfg[2].gpio_id = B_SENSOR_PORT2;
 	supla_input_cfg[2].channel = 3;
-	
+
 	// ---------------------------------------
 	// ---------------------------------------
 
     supla_relay_cfg[0].gpio_id = B_RELAY1_PORT;
     supla_relay_cfg[0].flags = RELAY_FLAG_RESET;
     supla_relay_cfg[0].channel = 0;
-    
+
     supla_relay_cfg[1].gpio_id = B_RELAY2_PORT;
     supla_relay_cfg[1].flags = RELAY_FLAG_RESET;
     supla_relay_cfg[1].channel = 1;
@@ -61,7 +61,7 @@ void ICACHE_FLASH_ATTR supla_esp_board_gpio_init(void) {
 }
 
 void ICACHE_FLASH_ATTR supla_esp_board_set_channels(TDS_SuplaDeviceChannel_B *channels, unsigned char *channel_count) {
-	
+
     *channel_count = 5;
 
 	channels[0].Number = 0;

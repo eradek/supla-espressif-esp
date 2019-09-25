@@ -87,6 +87,13 @@
 
 #include "board/inCan.h"
 
+#elif defined(__BOARD_mk_gate_01)
+
+#include "board/mk_gate_01.h"
+
+#elif defined(__BOARD_mk_gate_02)
+
+#include "board/mk_gate_02.h"
 #endif
 
 #ifdef SUPLA_ESP_BOARD_SUBDEF
