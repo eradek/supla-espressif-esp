@@ -42,12 +42,16 @@ void DHT_ICACHE_FLASH supla_dht_init(void) {
 
 void
 supla_dht_read_th(void *timer_arg) {
-	
+
 	DHT_Sensor sensor;
 	DHT_Sensor_Data output;
-	
+
 	#ifdef W1_GPIO0
 	  sensor.port = 0;
+	#elif defined(W1_GPIO1)
+	  sensor.port = 1;
+	#elif defined(W1_GPIO3)
+	  sensor.port = 3;
 	#elif defined(W1_GPIO5)
 	  sensor.port = 5;
 	#elif defined(W1_GPIO14)
@@ -55,19 +59,19 @@ supla_dht_read_th(void *timer_arg) {
 	#else
 	  sensor.port = 2;
 	#endif
-	
+
     #ifdef SENSOR_DHT11
 	  sensor.type = DHT11;
 	#else
 	  sensor.type = DHT22;
 	#endif
-	  
-	  
+
+
 	if ( DHTRead(&sensor, &output) ) {
-		
+
 		if ( supla_dht_last_temp != output.temperature
 				|| supla_dht_last_humidity != output.humidity ) {
-			
+
 			supla_dht_last_temp = output.temperature;
 			supla_dht_last_humidity = output.humidity;
 
@@ -82,8 +86,6 @@ supla_dht_read_th(void *timer_arg) {
 			#endif
 
 		}
-		
-		
 	} else {
 		supla_dht_last_temp = -275;
 		supla_dht_last_humidity = -1;
@@ -98,7 +100,6 @@ void DHT_ICACHE_FLASH supla_get_temp_and_humidity(char value[SUPLA_CHANNELVALUE_
 
 	memcpy(value, &t, 4);
 	memcpy(&value[4], &h, 4);
-	
 }
 
 void DHT_ICACHE_FLASH supla_dht_start(void) {

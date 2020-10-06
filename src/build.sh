@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-# 
+#
 # @author Przemyslaw Zygmunt przemek@supla.org
 #
 ###
@@ -51,8 +51,7 @@ case $1 in
       FLASH_SIZE="2048"
    ;;
    "rs_module")
-      FOTA=1
-      FLASH_SIZE="2048"
+      FLASH_SIZE="4096"
    ;;
    "lightswitch_x2")
      FLASH_SIZE="4096"
@@ -141,8 +140,24 @@ case $1 in
    "inCanRS_DHT22")
     SPI_MODE="QIO"
     FLASH_SIZE="4096"
+   ;;
+   "mk_gate_01")
+     FOTA=0
+    #  EXTRA_CCFLAGS="-DUSE_GPIO3 -DUSE_GPIO1"
+   ;;
+   "mk_gate_02")
+     FOTA=0
   ;;
-    
+    "mk_gate_02_dht22")
+      FOTA=0
+  ;;
+   "mk_rs_01")
+     FOTA=0
+  ;;
+   "mk_switch_02")
+     FOTA=0
+  ;;
+
    *)
    echo "Usage:"
    echo "       build.sh BOARD_TYPE";
@@ -182,11 +197,16 @@ case $1 in
    echo "              inCanRS_DS";
    echo "              inCanRS_DHT11";
    echo "              inCanRS_DHT22";
+   echo "              mk_gate_01";
+   echo "              mk_gate_02";
+   echo "              mk_gate_02_dht22";
+   echo "              mk_rs_01";
+   echo "              mk_switch_02";
    echo
    echo
    exit;
    ;;
-   
+
 esac
 fi
 
@@ -265,7 +285,7 @@ else
    make SUPLA_DEP_LIBS="$DEP_LIBS" BOARD=$1 CFG_SECTOR=$CFG_SECTOR BOOT=new APP=0 SPI_SPEED=40 SPI_MODE="$SPI_MODE" SPI_SIZE_MAP="$SPI_SIZE_MAP" __EXTRA_CCFLAGS="$EXTRA_CCFLAGS" && \
    cp $BIN_PATH/eagle.flash.bin $OUTDIR/"$BOARD_NAME"_"$FLASH_SIZE"_"$SPI_MODE"_eagle.flash.bin && \
    cp $BIN_PATH/eagle.irom0text.bin $OUTDIR/"$BOARD_NAME"_"$FLASH_SIZE"_"$SPI_MODE"_eagle.irom0text.bin &&
-   
+
    exit 0
 fi
 
