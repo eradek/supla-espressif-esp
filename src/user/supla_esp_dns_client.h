@@ -16,20 +16,19 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef SUPLA_RS_MODULE_H_
-#define SUPLA_RS_MODULE_H_
+#ifndef SUPLA_ESP_DNS_CLIENT_H_
+#define SUPLA_ESP_DNS_CLIENT_H_
 
-#define ESP8266_SUPLA_PROTO_VERSION 7
-#define _ROLLERSHUTTER_SUPPORT
+#ifndef ADDITIONAL_DNS_CLIENT_DISABLED
 
-#define DS18B20
-#define USE_GPIO16_OUTPUT
+#include <ip_addr.h>
+#include "supla_esp.h"
 
-#define TEMPERATURE_CHANNEL 2
-#define LED_RED_PORT 16
-#define WATCHDOG_TIMEOUT_SEC 90
+typedef void (*_dns_query_result_cb)(ip_addr_t *ip);
+void DNS_ICACHE_FLASH_ATTR supla_esp_dns_client_init(void);
+void DNS_ICACHE_FLASH_ATTR supla_esp_dns_resolve(
+    const char *domain, _dns_query_result_cb dns_query_result_cb);
 
-void ICACHE_FLASH_ATTR
-supla_esp_board_send_channel_values_with_delay(void *srpc);
+#endif /*ADDITIONAL_DNS_CLIENT_DISABLED*/
 
-#endif
+#endif /*SUPLA_ESP_DNS_CLIENT_H_*/

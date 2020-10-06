@@ -19,13 +19,11 @@
 #ifndef SUPLA_ESP_H_
 #define SUPLA_ESP_H_
 
-#define MEMLEAK_DEBUG
-
 #include "supla-dev/proto.h"
 #include "board/supla_esp_board.h"
 #include "espmissingincludes.h"
 
-#define SUPLA_ESP_SOFTVER "2.7.12"
+#define SUPLA_ESP_SOFTVER "2.7.25"
 
 #define STATE_UNKNOWN       0
 #define STATE_DISCONNECTED  1
@@ -104,6 +102,14 @@
 #define INPUT_TYPE_BTN_BISTABLE_RS       5
 #define INPUT_TYPE_CUSTOM                200
 
+#ifndef INPUT_MIN_CYCLE_COUNT
+#define INPUT_MIN_CYCLE_COUNT   5
+#endif /*INPUT_MIN_CYCLE_COUNT*/
+
+#ifndef INPUT_CYCLE_TIME
+#define INPUT_CYCLE_TIME        20
+#endif /*INPUT_CYCLE_TIME*/
+
 // milliseconds
 #ifndef RS_START_DELAY
 #define RS_START_DELAY 1000
@@ -139,6 +145,14 @@
 #define DHT_ICACHE_FLASH ICACHE_FLASH_ATTR
 #endif
 
+#ifndef CDT_ICACHE_FLASH_ATTR
+#define CDT_ICACHE_FLASH_ATTR  ICACHE_FLASH_ATTR
+#endif
+
+#ifndef DNS_ICACHE_FLASH_ATTR
+#define DNS_ICACHE_FLASH_ATTR  ICACHE_FLASH_ATTR
+#endif
+
 #ifndef BTN1_DEFAULT
 #define BTN1_DEFAULT BTN_TYPE_MONOSTABLE
 #endif
@@ -155,6 +169,10 @@
 #define PRODUCT_ID 0
 #endif
 
+#ifndef DEVICE_FLAGS
+#define DEVICE_FLAGS 0
+#endif
+
 void supla_esp_board_set_device_name(char *buffer, uint8 buffer_size);
 #if ESP8266_SUPLA_PROTO_VERSION >= 10
 void supla_esp_board_set_channels(TDS_SuplaDeviceChannel_C *channels, unsigned char *channel_count);
@@ -164,7 +182,7 @@ void supla_esp_board_set_channels(TDS_SuplaDeviceChannel_B *channels, unsigned c
 void supla_esp_board_relay_before_change_state(void);
 void supla_esp_board_relay_after_change_state(void);
 void supla_esp_board_gpio_init(void);
-
+void ICACHE_FLASH_ATTR supla_system_restart(void);
 
 
 #ifdef __FOTA
@@ -245,22 +263,28 @@ extern const uint8_t rsa_public_key_bytes[RSA_NUM_BYTES];
 #define WIFI_SSID_MAXSIZE   32
 #define WIFI_PWD_MAXSIZE    64
 
-#define STATE_MAXSIZE       200
+#define STATE_MAXSIZE       300
 
 #define RECVBUFF_MAXSIZE  1024
 
 #define ACTIVITY_TIMEOUT 10
 
-#ifndef WATCHDOG_TIMEOUT
-// us.
-#define WATCHDOG_TIMEOUT 60000000
+#ifdef WATCHDOG_TIMEOUT
+#error "WATCHDOG_TIMEOUT is deprecated use WATCHDOG_TIMEOUT_SEC"
 #endif /*WATCHDOG_TIMEOUT*/
 
-#ifndef WATCHDOG_SOFT_TIMEOUT
-// sec.
-// WATCHDOG_SOFT_TIMEOUT*1000000 > WATCHDOG_TIMEOUT == inactive
-#define WATCHDOG_SOFT_TIMEOUT 65
+#ifdef WATCHDOG_SOFT_TIMEOUT
+#error "WATCHDOG_SOFT_TIMEOUT is deprecated use WATCHDOG_SOFT_TIMEOUT_SEC"
 #endif /*WATCHDOG_SOFT_TIMEOUT*/
+
+#ifndef WATCHDOG_TIMEOUT_SEC
+#define WATCHDOG_TIMEOUT_SEC 60
+#endif /*WATCHDOG_TIMEOUT*/
+
+#ifndef WATCHDOG_SOFT_TIMEOUT_SEC
+// WATCHDOG_SOFT_TIMEOUT_SEC > WATCHDOG_TIMEOUT == WATCHDOG_TIMEOUT inactive
+#define WATCHDOG_SOFT_TIMEOUT_SEC 65
+#endif /*WATCHDOG_SOFT_TIMEOUT_SEC*/
 
 #ifndef RELAY_DOUBLE_TRY
 #define RELAY_DOUBLE_TRY 10000
@@ -277,5 +301,13 @@ extern const uint8_t rsa_public_key_bytes[RSA_NUM_BYTES];
 #ifndef RGBW_CHANNEL_LIMIT
 #define RGBW_CHANNEL_LIMIT if ( ChannelNumber >= 2 ) return;
 #endif
+
+#ifdef DONT_SAVE_STATE
+#define DEVICE_STATE_INACTIVE
+#endif
+
+unsigned _supla_int64_t MAIN_ICACHE_FLASH uptime_usec(void);
+unsigned _supla_int64_t MAIN_ICACHE_FLASH uptime_msec(void);
+uint32 MAIN_ICACHE_FLASH uptime_sec(void);
 
 #endif /* SUPLA_ESP_H_ */
